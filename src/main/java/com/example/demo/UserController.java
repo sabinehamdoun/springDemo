@@ -4,16 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping(value = "user")
-
 @CrossOrigin(origins = "*")
-
 public class UserController {
 
     private final UserService userService;
@@ -30,8 +27,7 @@ public class UserController {
 
     @GetMapping(value = "/getById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDTO> findById(@PathVariable Map<String, String> pathMap) {
-        int id = Integer.valueOf(pathMap.get("id"));
+    public UserDTO findById(@PathVariable int id) {
         return userService.findById(id);
     }
 
@@ -45,15 +41,19 @@ public class UserController {
         return map;
     }
 
-    @PutMapping(value = "/updateUser", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/updateUser/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void updateUser(UserDTO userDto) {
-
+    public Map<String, Object> updateUser(@PathVariable int id, @RequestBody UserDTO userDto) {
+        userService.updateUser(id, userDto);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("Success", true);
+        map.put("message", "User updated");
+        return map;
     }
 
     @DeleteMapping(value = "/deleteUser/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void deleteUser(int id) {
+    public void deleteUser(@PathVariable int id) {
         userService.deleteUser(id);
     }
 }
